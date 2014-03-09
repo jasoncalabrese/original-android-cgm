@@ -17,4 +17,8 @@ A fork of [@jcostik](https://twitter.com/jcostik)'s [original-android-app](https
 >
 > The Dexcom USB port will break! It was not designed for frequent connect/disconnects. Get a spare:-) and be gentle.
 
-**I 2nd the warning about the Dexcom USB port, I have broke several receivers before ever connecting a OTG cable and now have backup receiver.**
+**I 2nd the warning about the Dexcom USB port, I have broke several receivers before ever connecting an OTG cable and now have backup receiver.**
+
+I'm attempting to keep my changes minimal and distinct so that they may help other's.  I have a `feature/*` branch for each change/fix/extension and an `integration` branch that combines the features I'm currently using and any upstream commits that I merge in.  The `master` branch will stay a clean clone of upstream.
+
+-[@jasoncalabrese](https://twitter.com/jasoncalabrese)
