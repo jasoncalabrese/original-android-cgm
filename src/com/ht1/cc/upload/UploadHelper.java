@@ -1,56 +1,57 @@
 package com.ht1.cc.upload;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.*;
-
-import org.apache.commons.net.ftp.FTPClient;
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import org.json.JSONObject;
+
+import java.util.Arrays;
+
 public class UploadHelper extends AsyncTask<String, Integer, Long> {
 
 	Context context;
-	
+
     public UploadHelper(Context context) {
         this.context = context;
     }
+
 	protected Long doInBackground(String... data) {
 
-		//SO, here is where you're going to want to decide 
-		//how and where you want to send the "data.csv"
-
-		//I send to both azure site (FTP) and a google spreadsheet - between the
-		//two I get pretty close to 100% up-time
-
-		//FTP Example::
-
-		FTPClient ftpClient = new FTPClient();
+		System.out.println("DEXCOM DATA: " + Arrays.toString(data));
 
 		try {
-			ftpClient.connect(InetAddress.getByName("[YOUR SERVER]"));
-			ftpClient.login("USERNAME", "PASSWORD");
-			ftpClient.changeWorkingDirectory("DIRECTORY");
+			String timestamp = data[0];
+			String bg =  data[1];
+			String direction = data[2];
 
-			if (ftpClient.getReplyString().contains("250")) {
-				ftpClient.setFileType(org.apache.commons.net.ftp.FTP.BINARY_FILE_TYPE);
-				BufferedInputStream buffIn = null;
-				buffIn = new BufferedInputStream(new FileInputStream(new File(context.getFilesDir(), "data.csv")));
-				ftpClient.enterLocalPassiveMode();
+			DefaultHttpClient httpclient = new DefaultHttpClient();
+			HttpPost httpost = new HttpPost("http://192.168.1.105:9000/api/entries");
 
-				ftpClient.storeFile("data.csv", buffIn);
-				buffIn.close();
-				ftpClient.logout();
-				ftpClient.disconnect();
-			}
+			JSONObject json = new JSONObject();
+			//TODO: parse timestamp and include in json, currently server defaults to current time
+			//json.put("timestamp", parseTimestamp(timestamp));
+			json.put("bg", Integer.parseInt(bg));
+			json.put("direction", direction);
+			System.out.println("DEXCOM JSON: " + json.toString());
+
+			StringEntity se = new StringEntity(json.toString());
+			httpost.setEntity(se);
+			httpost.setHeader("Accept", "application/json");
+			httpost.setHeader("Content-type", "application/json");
+
+			ResponseHandler responseHandler = new BasicResponseHandler();
+			httpclient.execute(httpost, responseHandler);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
-		catch(Exception ex)
-		{
-			ex.printStackTrace();
-		}
 		return 1L;
 	}
 
