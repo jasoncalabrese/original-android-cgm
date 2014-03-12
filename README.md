@@ -1,7 +1,7 @@
 original-android-cgm
 ====================
 
-A fork of [@jcostik](https://twitter.com/jcostik)'s [original-android-app](https://github.com/hackingtype1/original-android-cgm) that I'm customizing to work on my old Galaxy Nexus and post simple json to [my very basic node.js/express.js/angular.js/mongo app](https://github.com/jasoncalabrese/project-glu)
+A fork of [@jcostik](https://twitter.com/jcostik)'s [original-android-app](https://github.com/hackingtype1/original-android-cgm) that I'm customizing to work on ~~my old Galaxy Nexus~~ a new Moto G and post simple json to [my very basic node.js/express.js/angular.js/mongo app](https://github.com/jasoncalabrese/project-glu)
 
 [@jcostik](https://twitter.com/jcostik)'s orginial [README.md](https://github.com/hackingtype1/original-android-cgm/blob/master/README.md)
 
