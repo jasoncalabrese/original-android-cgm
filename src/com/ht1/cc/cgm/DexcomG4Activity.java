@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -39,6 +40,8 @@ public class DexcomG4Activity extends Activity {
 	private ScrollView mScrollView;
 	private Button b1;
 
+	private final String TAG = DexcomG4Activity.class.getSimpleName();
+
 	
 	//All I'm really doing here is creating a simple activity to launch and maintain the service
 	private Runnable updateDataView = new Runnable() {
@@ -49,9 +52,17 @@ public class DexcomG4Activity extends Activity {
 					startService(new Intent(DexcomG4Activity.this,
 							DexcomG4Service.class));
 					mTitleTextView.setTextColor(Color.YELLOW);
-					mTitleTextView.setText("Connecting...");
+					String message = "Starting service " + retryCount + "/" + maxRetries;
+					mTitleTextView.setText(message);
+					Log.i(TAG, message);
+					try {
+						Thread.sleep(retryCount * 100L);
+					} catch (InterruptedException e) {}
 					++retryCount;
 				} else {
+					mTitleTextView.setTextColor(Color.RED);
+					mTitleTextView.setText("Unable to restart service");
+					Log.i(TAG, "Unable to restart service");
 					mHandler.removeCallbacks(updateDataView);
 					finish();
 				}

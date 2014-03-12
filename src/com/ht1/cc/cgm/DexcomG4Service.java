@@ -29,7 +29,7 @@ import android.widget.Toast;
 
 public class DexcomG4Service extends Service {
 
-	private final String TAG = DexcomG4Activity.class.getSimpleName();
+	private final String TAG = DexcomG4Service.class.getSimpleName();
 
 	/**
 	 * The device currently in use, or {@code null}.
