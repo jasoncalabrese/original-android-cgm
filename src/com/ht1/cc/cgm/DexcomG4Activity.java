@@ -11,7 +11,6 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -26,13 +25,9 @@ import android.widget.TextView;
 public class DexcomG4Activity extends Activity {
 
 
-	/**
-	 * The system's USB service.
-	 */
-	public UsbManager mUsbManager;
 	private Handler mHandler = new Handler();
 
-	private int maxRetries = 999;
+	private int maxRetries = 20;
 	private int retryCount = 0;
 
 	private TextView mTitleTextView;
@@ -42,7 +37,6 @@ public class DexcomG4Activity extends Activity {
 
 	private final String TAG = DexcomG4Activity.class.getSimpleName();
 
-	
 	//All I'm really doing here is creating a simple activity to launch and maintain the service
 	private Runnable updateDataView = new Runnable() {
 		public void run() {
@@ -56,15 +50,15 @@ public class DexcomG4Activity extends Activity {
 					mTitleTextView.setText(message);
 					Log.i(TAG, message);
 					try {
-						Thread.sleep(retryCount * 100L);
+						Thread.sleep(retryCount * 250L);
 					} catch (InterruptedException e) {}
 					++retryCount;
 				} else {
 					mTitleTextView.setTextColor(Color.RED);
 					mTitleTextView.setText("Unable to restart service");
-					Log.i(TAG, "Unable to restart service");
+					Log.i(TAG, "Unable to restart service, trying to recreate the activity");
 					mHandler.removeCallbacks(updateDataView);
-					finish();
+					recreate();
 				}
 			} else {
 				mTitleTextView.setTextColor(Color.GREEN);
@@ -164,9 +158,7 @@ public class DexcomG4Activity extends Activity {
 			Object o = ois.readObject();
 			return (EGVRecord) o;
 		} catch (Exception ex) {
-
-			ex.printStackTrace();
-
+			Log.e(TAG, " unable to loadEGVRecord", ex);
 		}
 		return new EGVRecord();
 	}
