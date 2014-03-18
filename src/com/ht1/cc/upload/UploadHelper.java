@@ -16,7 +16,7 @@ public class UploadHelper extends AsyncTask<String, Integer, Long> {
 
 	Context context;
 
-	private final String TAG = UploadHelper.class.getSimpleName();
+	private final String TAG = "DexcomUploadHelper";
 
     public UploadHelper(Context context) {
         this.context = context;
@@ -50,12 +50,6 @@ public class UploadHelper extends AsyncTask<String, Integer, Long> {
 		}
 
 		return 1L;
-	}
-
-	protected void onPostExecute(Long result) {
-		super.onPostExecute(result);
-		Log.i(TAG, result + " Status: FINISHED");
-
 	}
 
 	private void doPost(DefaultHttpClient httpclient, HttpPost post, String json) {
