@@ -44,7 +44,7 @@ public class UploadHelper extends AsyncTask<EGVRecord, Integer, Long> {
 			DefaultHttpClient httpclient = new DefaultHttpClient(params);
 
 			HttpPost localPost = new HttpPost("http://192.168.1.105:9000/api/entries");
-			HttpPost remotePost = new HttpPost("http://project-glu.cbrese.com/api/entries");
+			HttpPost remotePost = new HttpPost("http://[your server here]/api/entries");
 
 			for (EGVRecord record : records) {
 				Date date = DATE_FORMAT.parse(record.displayTime);
