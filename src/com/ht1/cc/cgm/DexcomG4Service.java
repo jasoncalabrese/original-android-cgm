@@ -218,7 +218,7 @@ public class DexcomG4Service extends Service {
 		mSerialDevice = UsbSerialProber.acquire(mUsbManager);
 		if (mSerialDevice == null) {
 			//displayMessage("CGM Not Found...");
-			this.stopSelf();
+			//this.stopSelf();
 			return false; // yeah, I know
 		} 
 		return true;
