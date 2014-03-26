@@ -1,6 +1,8 @@
 package com.ht1.cc.cgm;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.ht1.cc.USB.SerialInputOutputManager;
 import com.ht1.cc.USB.USBPower;
@@ -28,6 +30,8 @@ import android.widget.Toast;
 public class DexcomG4Service extends Service {
 
 	private final String TAG = DexcomG4Service.class.getSimpleName();
+
+	private boolean initialRead = true;
 
 	/**
 	 * The device currently in use, or {@code null}.
@@ -164,10 +168,25 @@ public class DexcomG4Service extends Service {
 
 				//Go get the data
 				DexcomReader dexcomReader = new DexcomReader(mSerialDevice);
-				dexcomReader.readFromReceiver(getBaseContext());
 
-				uploader.execute(dexcomReader.displayTime,
-						dexcomReader.bGValue, dexcomReader.trend);
+				if (initialRead == true) {
+					// for first time on, read at least 2 days of data.  Each Dexcom read of EGV records
+					// is limited to 4 pages which is equivalent to 12 hours of contiguous data, so
+					// read 20 pages which is ~ 2.5 days.
+					List<EGVRecord> data = new ArrayList<EGVRecord>();
+					for(int i = 1; i <= 5; i++) {
+						dexcomReader.readFromReceiver(getBaseContext(), i);
+						for(int j = 0; j < dexcomReader.mRD.length; j++) { data.add(dexcomReader.mRD[j]); }
+					}
+					EGVRecord[] dataRecords = new EGVRecord[data.size()];
+					dataRecords = data.toArray(dataRecords);
+					uploader.execute(dataRecords);
+					initialRead = false;
+				} else {
+					// just read most recent pages (consider only reading 1 page since only need latest value).
+					dexcomReader.readFromReceiver(getBaseContext(), 1);
+					uploader.execute(dexcomReader.mRD[dexcomReader.mRD.length - 1]);
+				}
 
 				Handler handler = new Handler();
 				handler.postDelayed(new Runnable() {

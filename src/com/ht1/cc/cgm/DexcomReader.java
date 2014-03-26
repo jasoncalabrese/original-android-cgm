@@ -34,6 +34,8 @@ public class DexcomReader extends AsyncTask<UsbSerialDriver, Object, Object>{
 	public String displayTime;
 	public String trend;
 
+	public EGVRecord[] mRD;
+
 	private final String TAG = DexcomReader.class.getSimpleName();
 
 	public DexcomReader (UsbSerialDriver device)
@@ -50,14 +52,16 @@ public class DexcomReader extends AsyncTask<UsbSerialDriver, Object, Object>{
 	//Dex grabs 4 pages of data at a time, so I parse the last 4 pages
 	//save the data to CSV and the most recent data to a serialized object for the
 	//gui to quickly ingest
-	public void readFromReceiver(Context context) {
+	public void readFromReceiver(Context context, int pageOffset) {
         
 		//locate the EGV data pages
         byte[] dexcomPageRange = getEGVDataPageRange();
         //Get the last 4 pages
-        byte[] databasePages = getLastFourPages(dexcomPageRange);
+        byte[] databasePages = getLastFourPages(dexcomPageRange, pageOffset);
         //Parse 'dem pages
         EGVRecord[] mostRecentData = parseDatabasePages(databasePages);
+
+		mRD = mostRecentData;
         
         //save them to the android file system for late access
 		writeLocalCSV(mostRecentData, context);
@@ -122,7 +126,7 @@ public class DexcomReader extends AsyncTask<UsbSerialDriver, Object, Object>{
         return dexcomPageRange;
 	}
 
-	private byte[] getLastFourPages(byte [] dexcomPageRange)
+	private byte[] getLastFourPages(byte [] dexcomPageRange, int pageOffset)
 	{
     	int[] rets = new int[24];
         int c = 0;
@@ -130,7 +134,7 @@ public class DexcomReader extends AsyncTask<UsbSerialDriver, Object, Object>{
         
         //ONLY interested in the last 4 pages of data for this app's requirements
         int endInt = toInt(endPage, 1);
-        int lastFour = endInt-3;
+        int lastFour = endInt - 4 * pageOffset + 1;
         ByteBuffer b = ByteBuffer.allocate(4);
         b.putInt(lastFour);
         byte[] result = b.array();

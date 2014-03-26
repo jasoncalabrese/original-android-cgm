@@ -4,47 +4,63 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.ht1.cc.cgm.EGVRecord;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONObject;
 
-public class UploadHelper extends AsyncTask<String, Integer, Long> {
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class UploadHelper extends AsyncTask<EGVRecord, Integer, Long> {
 
 	Context context;
 
-	private final String TAG = "DexcomUploadHelper";
+	private static final String TAG = "DexcomUploadHelper";
 
-    public UploadHelper(Context context) {
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
+	private static final int SOCKET_TIMEOUT = 60 * 1000;
+	private static final int CONNECTION_TIMEOUT = 30 * 1000;
+
+
+	public UploadHelper(Context context) {
         this.context = context;
     }
 
-	protected Long doInBackground(String... data) {
+	protected Long doInBackground(EGVRecord... records) {
 
 		try {
-			String timestamp = data[0];
-			String bg =  data[1];
-			String direction = data[2];
+			HttpParams params = new BasicHttpParams();
+			HttpConnectionParams.setSoTimeout(params, SOCKET_TIMEOUT);
+			HttpConnectionParams.setConnectionTimeout(params, CONNECTION_TIMEOUT);
 
-			DefaultHttpClient httpclient = new DefaultHttpClient();
+			DefaultHttpClient httpclient = new DefaultHttpClient(params);
+
 			HttpPost localPost = new HttpPost("http://192.168.1.105:9000/api/entries");
-			HttpPost remotePost = new HttpPost("http://[top-secrect-url]/api/entries");
+			HttpPost remotePost = new HttpPost("http://project-glu.cbrese.com/api/entries");
 
-			JSONObject json = new JSONObject();
-			//TODO: parse timestamp and include in json, currently server defaults to current time
-			//json.put("timestamp", parseTimestamp(timestamp));
-			json.put("bg", Integer.parseInt(bg));
-			json.put("direction", direction);
+			for (EGVRecord record : records) {
+				Date date = DATE_FORMAT.parse(record.displayTime);
+				JSONObject json = new JSONObject();
+				json.put("timestamp", date.getTime());
+				json.put("bg", Integer.parseInt(record.bGValue));
+				json.put("direction", record.trend);
 
-			String jsonString = json.toString();
+				String jsonString = json.toString();
 
-			Log.i(TAG, "DEXCOM JSON: " + jsonString);
+				Log.i(TAG, "DEXCOM JSON: " + jsonString);
 
-			doPost(httpclient, localPost, jsonString);
-			doPost(httpclient, remotePost, jsonString);
+				doPost(httpclient, localPost, jsonString);
+				doPost(httpclient, remotePost, jsonString);
+			}
+
 		} catch (Exception e) {
 			Log.e(TAG, "Unable to post data", e);
 		}
