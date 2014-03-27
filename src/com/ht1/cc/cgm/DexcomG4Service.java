@@ -177,6 +177,7 @@ public class DexcomG4Service extends Service {
 					for(int i = 1; i <= 5; i++) {
 						dexcomReader.readFromReceiver(getBaseContext(), i);
 						for(int j = 0; j < dexcomReader.mRD.length; j++) { data.add(dexcomReader.mRD[j]); }
+						try { Thread.sleep(200); } catch (InterruptedException e) { }
 					}
 					EGVRecord[] dataRecords = new EGVRecord[data.size()];
 					dataRecords = data.toArray(dataRecords);
@@ -186,36 +187,36 @@ public class DexcomG4Service extends Service {
 					// just read most recent pages (consider only reading 1 page since only need latest value).
 					dexcomReader.readFromReceiver(getBaseContext(), 1);
 					uploader.execute(dexcomReader.mRD[dexcomReader.mRD.length - 1]);
-				}
 
-				Handler handler = new Handler();
-				handler.postDelayed(new Runnable() {
-					@Override
-					//Interesting case: location with lousy wifi
-					//toggle it off to use cellular
-					//toggle back on for next try
-					public void run() {
-						Status dataUp = uploader.getStatus();
-						if (dataUp == AsyncTask.Status.RUNNING) {
-							uploader.cancel(true);
-							
-							if (wifiManager.isWifiEnabled()) {
-								wifiManager.setWifiEnabled(false);
+					Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						//Interesting case: location with lousy wifi
+						//toggle it off to use cellular
+						//toggle back on for next try
+						public void run() {
+							Status dataUp = uploader.getStatus();
+							if (dataUp == AsyncTask.Status.RUNNING) {
+								uploader.cancel(true);
 
-								try {
-									Thread.sleep(2500);
-								} catch (InterruptedException e) { }
+								if (wifiManager.isWifiEnabled()) {
+									wifiManager.setWifiEnabled(false);
 
-								wifiManager.setWifiEnabled(true);
+									try {
+										Thread.sleep(2500);
+									} catch (InterruptedException e) { }
 
-								try {
-									Thread.sleep(2500);
-								} catch (InterruptedException e) { }
+									wifiManager.setWifiEnabled(true);
+
+									try {
+										Thread.sleep(2500);
+									} catch (InterruptedException e) { }
+								}
 							}
-						}
 
-					}
-				}, 22500);
+						}
+					}, 22500);
+				}
 
 			}
 
