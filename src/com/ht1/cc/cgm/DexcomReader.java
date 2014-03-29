@@ -294,8 +294,6 @@ public class DexcomReader extends AsyncTask<UsbSerialDriver, Object, Object>{
         		record.setTrendArrow(trendA);
         		
         		recordsToReturn[k++] = record;
-
-				try { Thread.sleep(100); } catch (InterruptedException e) { }
         	}
         }       
 		return recordsToReturn;
