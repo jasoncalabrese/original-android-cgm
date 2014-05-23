@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="original-android-cgm" default="all">
+  
+  
+  <property file="build.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/*.rbc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.war"/>
+    <include name="*.ear"/>
+    <include name="*.apk"/>
+    <include name="*.zip"/>
+    <include name="*.swc"/>
+    <include name="*.ane"/>
+    <include name="*.egg"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.android_4.2.2_platform" value="${jdk.home.android_4.2.2_platform}/../../../../Library/Java/JavaVirtualMachines/1.6.0_33-b03-424.jdk/Contents/Home/bin"/>
+  <path id="jdk.classpath.android_4.2.2_platform">
+    <fileset dir="${jdk.home.android_4.2.2_platform}">
+      <include name="platforms/android-17/android.jar"/>
+      <include name="platforms/android-17/data/res"/>
+      <include name="tools/support/annotations.jar"/>
+      <include name="platforms/android-19/data/res"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.android_4.2.2_platform}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.android_4.2.2_platform}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.android_4.2.2_platform"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.libs.classpath">
+    <pathelement location="${basedir}/libs/commons-net-ftp-2.0.jar"/>
+    <pathelement location="${basedir}/libs/gson-2.1.jar"/>
+    <pathelement location="${basedir}/libs/guava-14.0.1.jar"/>
+    <pathelement location="${basedir}/libs/jackson-core-asl-1.9.11.jar"/>
+    <pathelement location="${basedir}/libs/jsr305-1.3.9.jar"/>
+    <pathelement location="${basedir}/libs/protobuf-java-2.4.1.jar"/>
+  </path>
+  
+  
+  <!-- Global Libraries -->
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module original-android-cgm -->
+  
+  <dirname property="module.original-android-cgm.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.original-android-cgm" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.original-android-cgm" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.original-android-cgm" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.original-android-cgm" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="original-android-cgm.output.dir" value="${module.original-android-cgm.basedir}/out/production/original-android-cgm"/>
+  <property name="original-android-cgm.testoutput.dir" value="${module.original-android-cgm.basedir}/out/test/original-android-cgm"/>
+  
+  <path id="original-android-cgm.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="original-android-cgm.module.production.classpath">
+    <path refid="${module.jdk.classpath.original-android-cgm}"/>
+    <path refid="library.libs.classpath"/>
+  </path>
+  
+  <path id="original-android-cgm.runtime.production.module.classpath">
+    <pathelement location="${original-android-cgm.output.dir}"/>
+    <path refid="library.libs.classpath"/>
+  </path>
+  
+  <path id="original-android-cgm.module.classpath">
+    <path refid="${module.jdk.classpath.original-android-cgm}"/>
+    <pathelement location="${original-android-cgm.output.dir}"/>
+    <path refid="library.libs.classpath"/>
+  </path>
+  
+  <path id="original-android-cgm.runtime.module.classpath">
+    <pathelement location="${original-android-cgm.testoutput.dir}"/>
+    <pathelement location="${original-android-cgm.output.dir}"/>
+    <path refid="library.libs.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.original-android-cgm">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.original-android-cgm">
+    <patternset refid="excluded.from.module.original-android-cgm"/>
+  </patternset>
+  
+  <path id="original-android-cgm.module.sourcepath">
+    <dirset dir="${module.original-android-cgm.basedir}">
+      <include name="src"/>
+      <include name="gen"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.original-android-cgm" depends="compile.module.original-android-cgm.production,compile.module.original-android-cgm.tests" description="Compile module original-android-cgm"/>
+  
+  <target name="compile.module.original-android-cgm.production" description="Compile module original-android-cgm; production classes">
+    <mkdir dir="${original-android-cgm.output.dir}"/>
+    <javac destdir="${original-android-cgm.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.original-android-cgm}/javac">
+      <compilerarg line="${compiler.args.original-android-cgm}"/>
+      <bootclasspath refid="original-android-cgm.module.bootclasspath"/>
+      <classpath refid="original-android-cgm.module.production.classpath"/>
+      <src refid="original-android-cgm.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.original-android-cgm"/>
+    </javac>
+    
+    <copy todir="${original-android-cgm.output.dir}">
+      <fileset dir="${module.original-android-cgm.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.original-android-cgm.basedir}/gen">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.original-android-cgm.tests" depends="compile.module.original-android-cgm.production" description="compile module original-android-cgm; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.original-android-cgm" description="cleanup module">
+    <delete dir="${original-android-cgm.output.dir}"/>
+    <delete dir="${original-android-cgm.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.original-android-cgm" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.original-android-cgm" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.original-android-cgm" value="${basedir}/out/artifacts/original_android_cgm"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.original-android-cgm.apk" value="${artifacts.temp.dir}/original-android-cgm.apk"/>
+  </target>
+  
+  <target name="artifact.original-android-cgm" depends="init.artifacts, compile.module.original-android-cgm" description="Build &#39;original-android-cgm&#39; artifact">
+    <property name="artifact.temp.output.original-android-cgm" value="${artifacts.temp.dir}/original_android_cgm"/>
+    <mkdir dir="${artifact.temp.output.original-android-cgm}"/>
+    <zip destfile="${temp.jar.path.original-android-cgm.apk}">
+      <zipfileset src="/Users/jcalabre/Development/workspace/original-android-cgm/out/production/original-android-cgm/original-android-cgm.afp.apk!/"/>
+    </zip>
+    <copy file="${temp.jar.path.original-android-cgm.apk}" tofile="${artifact.temp.output.original-android-cgm}/original-android-cgm.apk"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.original-android-cgm" description="Build all artifacts">
+    <mkdir dir="${artifact.output.original-android-cgm}"/>
+    <copy todir="${artifact.output.original-android-cgm}">
+      <fileset dir="${artifact.temp.output.original-android-cgm}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>
